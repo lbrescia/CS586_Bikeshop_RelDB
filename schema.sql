@@ -11,6 +11,16 @@ CREATE TABLE IF NOT EXISTS customers (
 	zip_code	 VARCHAR(10)
 );
 
+-- stocks table domain
+CREATE TABLE IF NOT EXISTS stocks (
+	store_id	 INT,
+	product_id	 INT,
+	quantity	 INT,
+	PRIMARY KEY (store_id, product_id), -- Composite primary key
+	FOREIGN KEY (product_id) REFERENCES products(product_id), -- Foreign key to products table
+	FOREIGN KEY (store_id) REFERENCES stores(store_id) -- Foreign key to stores table
+);
+
 -- stores table domain
 CREATE TABLE IF NOT EXISTS stores (
 	store_id	 SERIAL PRIMARY KEY,
@@ -40,6 +50,12 @@ CREATE TABLE IF NOT EXISTS orders (
 -- Explaining the order_status column values and their meanings
 COMMENT ON COLUMN orders.order_status IS '1: Pending, 2: Processing, 3: Rejected, 4: Completed';
 
+-- brands table domain
+CREATE TABLE IF NOT EXISTS brands (
+	brand_id	 SERIAL PRIMARY KEY,
+	brand_name	 VARCHAR(50)
+);
+
 -- products table domain
 CREATE TABLE IF NOT EXISTS products (
 	product_id	 SERIAL PRIMARY KEY,
@@ -47,8 +63,8 @@ CREATE TABLE IF NOT EXISTS products (
 	brand_id	 INT,
 	category_id	 INT,
 	model_year	 VARCHAR(9),
-	list_price	 MONEY
-	-- UNCOMMENT THIS!!! FOREIGN KEY (brand_id) REFERENCES brands(brand_id) -- Foreign key to brands table
+	list_price	 MONEY,
+	FOREIGN KEY (brand_id) REFERENCES brands(brand_id) -- Foreign key to brands table
 );
 
 -- order_items table domain

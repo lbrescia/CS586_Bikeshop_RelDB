@@ -1,5 +1,5 @@
 -- If there are any tables in the database, delete them and reset the sequence
-TRUNCATE TABLE order_items, products, orders, staffs, customers, stores RESTART IDENTITY CASCADE;
+TRUNCATE TABLE stocks, brands, order_items, products, orders, staffs, customers, stores RESTART IDENTITY CASCADE;
 
 -- change the directory to the current script directory
 \cd :scriptdir
@@ -28,9 +28,25 @@ DELIMITER ','
 CSV HEADER
 NULL AS 'NULL';
 
+-- Load the brands.csv file into the database
+\set csvfile :scriptdir'/csv/brands.csv'
+COPY brands(brand_id, brand_name)
+FROM :'csvfile'
+DELIMITER ','
+CSV HEADER
+NULL AS 'NULL';
+
 -- Load the products.csv file into the database
 \set csvfile :scriptdir'/csv/products.csv'
 COPY products(product_id, product_name, brand_id, category_id, model_year, list_price)
+FROM :'csvfile'
+DELIMITER ','
+CSV HEADER
+NULL AS 'NULL';
+
+-- Load the stocks.csv file into the database
+\set csvfile :scriptdir'/csv/stocks.csv'
+COPY stocks(store_id, product_id, quantity)
 FROM :'csvfile'
 DELIMITER ','
 CSV HEADER
