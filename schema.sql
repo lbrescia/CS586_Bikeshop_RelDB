@@ -11,6 +11,18 @@ CREATE TABLE IF NOT EXISTS customers (
 	zip_code	 VARCHAR(10)
 );
 
+-- stores table domain
+CREATE TABLE IF NOT EXISTS stores (
+	store_id	 SERIAL PRIMARY KEY,
+	store_name	 VARCHAR(50),
+	phone		 VARCHAR(15),
+	email		 VARCHAR(50),
+	street		 VARCHAR(100),
+	city		 VARCHAR(100),
+	"state"		 VARCHAR(14),
+	zip_code	 VARCHAR(10)
+);
+
 -- orders table domain
 CREATE TABLE IF NOT EXISTS orders (
 	order_id	  SERIAL PRIMARY KEY,
@@ -21,7 +33,8 @@ CREATE TABLE IF NOT EXISTS orders (
 	shipped_date  DATE,
 	store_id	  INT,
 	staff_id	  INT,
-	FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+	FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+	FOREIGN KEY (store_id) REFERENCES stores(store_id)
 );
 
 -- Explaining the order_status column values and their meanings
@@ -39,6 +52,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 	--FOREIGN KEY (product_id) REFERENCES products(product_id)  UNCOMMENT THIS LINE AFTER CREATING THE PRODUCTS TABLE
 );
 
+-- staffs table domain
 CREATE TABLE IF NOT EXISTS staffs (
 	staff_id	 SERIAL PRIMARY KEY,
 	first_name	 VARCHAR(50),
@@ -48,6 +62,6 @@ CREATE TABLE IF NOT EXISTS staffs (
 	active		 BOOLEAN,
 	store_id	 INT,
 	manager_id	 INT,
-	FOREIGN KEY (manager_id) REFERENCES staffs(staff_id) -- Self-referencing foreign key
-	--FOREIGN KEY (store_id) REFERENCES stores(store_id)  UNCOMMENT THIS LINE AFTER CREATING THE STORES TABLE
+	FOREIGN KEY (manager_id) REFERENCES staffs(staff_id), -- Self-referencing foreign key
+	FOREIGN KEY (store_id) REFERENCES stores(store_id)
 );
