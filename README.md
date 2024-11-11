@@ -17,7 +17,7 @@ psql -U <YourUser> -d bikeshop_reldb -f schema.sql
 
 **Step 3:** After the tables have been created you can load the data from the csv files by running the command:
 ```bash
-"psql -v scriptdir=<Path/To/Your/Working/Directory> -U <YourUser> -d bikeshop_reldb -f load_csv.sql"
+psql -v scriptdir=<Path/To/Your/Working/Directory> -U <YourUser> -d bikeshop_reldb -f load_csv.sql
 ```
 
 This should be enough for you to start working with the database!  
