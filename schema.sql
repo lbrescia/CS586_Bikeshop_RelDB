@@ -40,6 +40,18 @@ CREATE TABLE IF NOT EXISTS orders (
 -- Explaining the order_status column values and their meanings
 COMMENT ON COLUMN orders.order_status IS '1: Pending, 2: Processing, 3: Rejected, 4: Completed';
 
+-- products table domain
+CREATE TABLE IF NOT EXISTS products (
+	product_id	 SERIAL PRIMARY KEY,
+	product_name VARCHAR(150),
+	brand_id	 INT,
+	category_id	 INT,
+	model_year	 VARCHAR(9),
+	list_price	 MONEY
+	-- UNCOMMENT THIS!!! FOREIGN KEY (brand_id) REFERENCES brands(brand_id) -- Foreign key to brands table
+);
+
+-- order_items table domain
 CREATE TABLE IF NOT EXISTS order_items (
 	order_id     INT,
 	item_id 	 INT,
@@ -48,8 +60,8 @@ CREATE TABLE IF NOT EXISTS order_items (
 	list_price   MONEY,
 	discount	 DECIMAL(3, 2),      -- 2 digits, 2 decimal places
 	PRIMARY KEY (order_id, item_id), -- Composite primary key
-	FOREIGN KEY (order_id) REFERENCES orders(order_id) 
-	--FOREIGN KEY (product_id) REFERENCES products(product_id)  UNCOMMENT THIS LINE AFTER CREATING THE PRODUCTS TABLE
+	FOREIGN KEY (order_id) REFERENCES orders(order_id),   	  -- Foreign key to orders table
+	FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Foreign key to products table
 );
 
 -- staffs table domain
@@ -63,5 +75,5 @@ CREATE TABLE IF NOT EXISTS staffs (
 	store_id	 INT,
 	manager_id	 INT,
 	FOREIGN KEY (manager_id) REFERENCES staffs(staff_id), -- Self-referencing foreign key
-	FOREIGN KEY (store_id) REFERENCES stores(store_id)
+	FOREIGN KEY (store_id) REFERENCES stores(store_id)	  -- Foreign key to stores table
 );
