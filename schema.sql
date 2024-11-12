@@ -1,6 +1,6 @@
 -- customers table domain
 CREATE TABLE IF NOT EXISTS customers (
-	customer_id  SERIAL PRIMARY KEY,
+	customer_id  SERIAL PRIMARY KEY,  -- Primary key
 	first_name	 VARCHAR(50),
 	last_name 	 VARCHAR(50),
 	phone		 VARCHAR(15),
@@ -13,19 +13,19 @@ CREATE TABLE IF NOT EXISTS customers (
 
 -- brands table domain
 CREATE TABLE IF NOT EXISTS brands (
-	brand_id	 SERIAL PRIMARY KEY,
+	brand_id	 SERIAL PRIMARY KEY,  -- Primary key
 	brand_name	 VARCHAR(50) NOT NULL
 );
 
 -- categories table domain
 CREATE TABLE IF NOT EXISTS categories (
-	category_id	 SERIAL PRIMARY KEY,
+	category_id	 SERIAL PRIMARY KEY,   -- Primary key
 	category_name VARCHAR(50) NOT NULL
 );
 
 -- products table domain
 CREATE TABLE IF NOT EXISTS products (
-	product_id	 SERIAL PRIMARY KEY,
+	product_id	 SERIAL PRIMARY KEY,  -- Primary key
 	product_name VARCHAR(150),
 	brand_id	 INT NOT NULL,
 	category_id	 INT NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS products (
 
 -- stores table domain
 CREATE TABLE IF NOT EXISTS stores (
-	store_id	 SERIAL PRIMARY KEY,
+	store_id	 SERIAL PRIMARY KEY,  -- Primary key
 	store_name	 VARCHAR(50),
 	phone		 VARCHAR(15),
 	email		 VARCHAR(50),
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS stocks (
 
 -- orders table domain
 CREATE TABLE IF NOT EXISTS orders (
-	order_id	  SERIAL PRIMARY KEY,
+	order_id	  SERIAL PRIMARY KEY,   -- Primary key
 	customer_id   INT NOT NULL,
 	order_status  VARCHAR(50),
 	order_date	  DATE DEFAULT CURRENT_DATE, 
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS orders (
 	shipped_date  DATE,
 	store_id	  INT NOT NULL,
 	staff_id	  INT NOT NULL,
-	FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-	FOREIGN KEY (store_id) REFERENCES stores(store_id)
+	FOREIGN KEY (customer_id) REFERENCES customers(customer_id),  -- Foreign key to customers table
+	FOREIGN KEY (store_id) REFERENCES stores(store_id)			  -- Foreign key to stores table
 );
 
 -- Explaining the order_status column values and their meanings
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 
 -- staffs table domain
 CREATE TABLE IF NOT EXISTS staffs (
-	staff_id	 SERIAL PRIMARY KEY,
+	staff_id	 SERIAL PRIMARY KEY,  -- Primary key
 	first_name	 VARCHAR(50),
 	last_name	 VARCHAR(50),
 	email		 VARCHAR(50),
