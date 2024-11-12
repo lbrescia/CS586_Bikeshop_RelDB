@@ -11,14 +11,28 @@ CREATE TABLE IF NOT EXISTS customers (
 	zip_code	 VARCHAR(10)
 );
 
--- stocks table domain
-CREATE TABLE IF NOT EXISTS stocks (
-	store_id	 INT,
-	product_id	 INT,
-	quantity	 INT,
-	PRIMARY KEY (store_id, product_id), -- Composite primary key
-	FOREIGN KEY (product_id) REFERENCES products(product_id), -- Foreign key to products table
-	FOREIGN KEY (store_id) REFERENCES stores(store_id) -- Foreign key to stores table
+-- brands table domain
+CREATE TABLE IF NOT EXISTS brands (
+	brand_id	 SERIAL PRIMARY KEY,
+	brand_name	 VARCHAR(50)
+);
+
+-- categories table domain
+CREATE TABLE IF NOT EXISTS categories (
+	category_id	 SERIAL PRIMARY KEY,
+	category_name VARCHAR(50)
+);
+
+-- products table domain
+CREATE TABLE IF NOT EXISTS products (
+	product_id	 SERIAL PRIMARY KEY,
+	product_name VARCHAR(150),
+	brand_id	 INT,
+	category_id	 INT,
+	model_year	 VARCHAR(9),
+	list_price	 MONEY,
+	FOREIGN KEY (brand_id) REFERENCES brands(brand_id), -- Foreign key to brands table
+	FOREIGN KEY (category_id) REFERENCES categories(category_id) -- Foreign key to categories table
 );
 
 -- stores table domain
@@ -31,6 +45,16 @@ CREATE TABLE IF NOT EXISTS stores (
 	city		 VARCHAR(100),
 	"state"		 VARCHAR(14),
 	zip_code	 VARCHAR(10)
+);
+
+-- stocks table domain
+CREATE TABLE IF NOT EXISTS stocks (
+	store_id	 INT,
+	product_id	 INT,
+	quantity	 INT,
+	PRIMARY KEY (store_id, product_id), -- Composite primary key
+	FOREIGN KEY (product_id) REFERENCES products(product_id), -- Foreign key to products table
+	FOREIGN KEY (store_id) REFERENCES stores(store_id) -- Foreign key to stores table
 );
 
 -- orders table domain
@@ -49,23 +73,6 @@ CREATE TABLE IF NOT EXISTS orders (
 
 -- Explaining the order_status column values and their meanings
 COMMENT ON COLUMN orders.order_status IS '1: Pending, 2: Processing, 3: Rejected, 4: Completed';
-
--- brands table domain
-CREATE TABLE IF NOT EXISTS brands (
-	brand_id	 SERIAL PRIMARY KEY,
-	brand_name	 VARCHAR(50)
-);
-
--- products table domain
-CREATE TABLE IF NOT EXISTS products (
-	product_id	 SERIAL PRIMARY KEY,
-	product_name VARCHAR(150),
-	brand_id	 INT,
-	category_id	 INT,
-	model_year	 VARCHAR(9),
-	list_price	 MONEY,
-	FOREIGN KEY (brand_id) REFERENCES brands(brand_id) -- Foreign key to brands table
-);
 
 -- order_items table domain
 CREATE TABLE IF NOT EXISTS order_items (
