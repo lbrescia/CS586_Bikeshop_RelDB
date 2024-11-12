@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS customers (
 -- brands table domain
 CREATE TABLE IF NOT EXISTS brands (
 	brand_id	 SERIAL PRIMARY KEY,
-	brand_name	 VARCHAR(50)
+	brand_name	 VARCHAR(50) NOT NULL
 );
 
 -- categories table domain
 CREATE TABLE IF NOT EXISTS categories (
 	category_id	 SERIAL PRIMARY KEY,
-	category_name VARCHAR(50)
+	category_name VARCHAR(50) NOT NULL
 );
 
 -- products table domain
