@@ -271,26 +271,28 @@ WHERE st.product_id IS NULL
 ORDER BY s.store_name, p.product_name;
 
 
+-- 20. Who was the highest average salesperson per month and per store from 2016-2018?
 WITH monthly_sales AS (
-    SELECT s.store_name, st.first_name AS salesperson_first_name, 
-           st.last_name AS salesperson_last_name, 
-           TO_CHAR(o.order_date, 'YYYY-MM') AS sales_month, 
-           SUM((oi.list_price * oi.quantity)::numeric) AS total_sales_amount 
-    FROM orders o 
-    JOIN order_items oi ON o.order_id = oi.order_id 
-    JOIN staffs st ON o.staff_id = st.staff_id 
-    JOIN stores s ON o.store_id = s.store_id 
-    WHERE o.order_date BETWEEN '2016-01-01' AND '2018-12-31' 
+    SELECT s.store_name, st.first_name AS salesperson_first_name, st.last_name AS salesperson_last_name,
+        TO_CHAR(o.order_date, 'YYYY-MM') AS sales_month, SUM((oi.list_price * oi.quantity)::numeric) AS total_sales_amount
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN staffs st ON o.staff_id = st.staff_id
+    JOIN stores s ON o.store_id = s.store_id
+    WHERE o.order_date BETWEEN '2016-01-01' AND '2018-12-31'
     GROUP BY s.store_name, st.staff_id, st.first_name, st.last_name, TO_CHAR(o.order_date, 'YYYY-MM')
-), 
+),
 average_sales_per_month AS (
-    SELECT store_name, salesperson_first_name, salesperson_last_name, 
-           AVG(total_sales_amount::numeric)::MONEY AS avg_sales_per_month 
-    FROM monthly_sales 
+    SELECT store_name, salesperson_first_name, salesperson_last_name,
+        AVG(total_sales_amount::numeric)::MONEY AS avg_sales_per_month
+    FROM monthly_sales
     GROUP BY store_name, salesperson_first_name, salesperson_last_name
-) 
-SELECT store_name, salesperson_first_name, salesperson_last_name, avg_sales_per_month 
-FROM average_sales_per_month 
-ORDER BY store_name, avg_sales_per_month DESC 
-LIMIT 1;
-
+)
+SELECT asm.store_name, asm.salesperson_first_name, asm.salesperson_last_name, asm.avg_sales_per_month
+FROM average_sales_per_month asm
+WHERE (asm.store_name, asm.avg_sales_per_month) IN (
+    SELECT store_name, MAX(avg_sales_per_month) AS max_avg_sales
+    FROM average_sales_per_month
+    GROUP BY store_name
+)
+ORDER BY asm.store_name;
