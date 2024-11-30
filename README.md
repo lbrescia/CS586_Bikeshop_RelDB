@@ -27,7 +27,7 @@ psql -v scriptdir=<Path/To/Your/Working/Directory> -U <YourUser> -d bikeshop_rel
 psql -U <YourUser> -d bikeshop_reldb -f update.sql
 ```
 
-**STEP 5:** To run my querires that answer my 20 questions for the database, run the following command:
+**STEP 5:** To run my queries that answer my 20 questions for the database, run the following command:
 ```sql
 psql -U <YourUser> -d bikeshop_reldb -f queries.sql
 ```
