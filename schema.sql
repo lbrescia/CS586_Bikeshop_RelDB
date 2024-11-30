@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 	quantity     INT NOT NULL,
 	list_price   MONEY,
 	discount	 DECIMAL(3, 2),      -- 2 digits, 2 decimal places
-	PRIMARY KEY (order_id, item_id), -- Composite primary key
+	PRIMARY KEY (order_id, product_id), -- Composite primary key
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),   	  -- Foreign key to orders table
 	FOREIGN KEY (product_id) REFERENCES products(product_id)  -- Foreign key to products table
 );

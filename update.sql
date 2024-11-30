@@ -14,3 +14,5 @@ UPDATE customers
 SET phone = 'Not Provided'
 WHERE phone IS NULL;
 
+-- Remove the item_id column from the table
+ALTER TABLE order_items DROP COLUMN item_id;
