@@ -1,25 +1,10 @@
 -- What are the 5 customers who had the most purchases between 2016-01-01 and 2018-12-31
-SELECT 
-    c.customer_id, 
-    c.first_name, 
-    c.last_name, 
-    c.state, 
-    c.zip_code, 
-    COUNT(o.order_id) AS num_purchases
-FROM 
-    customers c
-JOIN 
-    orders o ON c.customer_id = o.customer_id
-WHERE 
-    o.order_date BETWEEN '2016-01-01' AND '2018-12-31'
-GROUP BY 
-    c.customer_id, 
-    c.first_name, 
-    c.last_name, 
-    c.state, 
-    c.zip_code
-ORDER BY 
-    num_purchases DESC
+SELECT c.customer_id, c.first_name, c.last_name, c.state, c.zip_code, COUNT(o.order_id) AS num_purchases
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date BETWEEN '2016-01-01' AND '2018-12-31'
+GROUP BY c.customer_id, c.first_name, c.last_name, c.state, c.zip_code
+ORDER BY num_purchases DESC
 LIMIT 5;
 
 
@@ -78,3 +63,19 @@ ORDER BY discount_count DESC;
 
 
 -- What are the minimum, maximum, and average list prices for all products by category?
+-- Create a view to utilize for the next question
+CREATE OR REPLACE VIEW price_stats AS
+SELECT c.category_name, MIN(p.list_price::numeric)::MONEY AS min_price,
+MAX(p.list_price::numeric)::MONEY AS max_price, AVG(p.list_price::numeric)::MONEY AS avg_price
+FROM products p
+JOIN categories c ON p.category_id = c.category_id
+GROUP BY c.category_name
+ORDER BY c.category_name;
+-- Have to execute the query after the view is created
+SELECT * FROM price_stats;
+
+
+-- What categories have a difference greater than $800 between their highest and lowest list prices?
+SELECT category_name, max_price - min_price AS price_difference
+FROM price_stats
+WHERE (max_price - min_price)::numeric > 800;

@@ -22,9 +22,14 @@ psql -U <YourUser> -d bikeshop_reldb -f schema.sql
 psql -v scriptdir=<Path/To/Your/Working/Directory> -U <YourUser> -d bikeshop_reldb -f load_csv.sql
 ```
 
-**STEP 4:** in order to update some data that was loaded into the files for more clarity run the following command:
+**STEP 4:** In order to update some data that was loaded into the files for more clarity, run the following command:
 ```sql
 psql -U <YourUser> -d bikeshop_reldb -f update.sql
+```
+
+**STEP 5:** To run my querires that answer my 20 questions for the database, run the following command:
+```sql
+psql -U <YourUser> -d bikeshop_reldb -f queries.sql
 ```
 
 This should be enough for you to start working with the database!  
