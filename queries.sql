@@ -1,3 +1,9 @@
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_products_category_id ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_categories_category_name ON categories(category_name);
+
 -- What are the 5 customers who had the most purchases between 2016-01-01 and 2018-12-31
 SELECT c.customer_id, c.first_name, c.last_name, c.state, c.zip_code, COUNT(o.order_id) AS num_purchases
 FROM customers c
@@ -79,3 +85,69 @@ SELECT * FROM price_stats;
 SELECT category_name, max_price - min_price AS price_difference
 FROM price_stats
 WHERE (max_price - min_price)::numeric > 800;
+
+
+-- Which customers have ordered items from at least 6 different categories?
+SELECT c.customer_id, c.first_name, c.last_name, COUNT(DISTINCT p.category_id) AS num_categories 
+FROM orders o 
+JOIN order_items oi ON o.order_id = oi.order_id 
+JOIN products p ON oi.product_id = p.product_id 
+JOIN customers c ON o.customer_id = c.customer_id 
+GROUP BY c.customer_id, c.first_name, c.last_name 
+HAVING COUNT(DISTINCT p.category_id) >= 6 
+ORDER BY num_categories DESC;
+
+
+-- What is the average monthly revenue for each store?
+-- Link to reference for converting date with TO_CHAR: https://www.sqlines.com/oracle-to-sql-server/to_char_datetime
+SELECT st.store_id, st.store_name, COUNT(DISTINCT TO_CHAR(o.order_date, 'YYYY-MM')) AS month_count,
+       SUM(oi.quantity * oi.list_price * (1 - oi.discount)) / COUNT(DISTINCT TO_CHAR(o.order_date, 'YYYY-MM')) AS avg_monthly_revenue
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN stores st ON o.store_id = st.store_id
+GROUP BY st.store_id, st.store_name
+ORDER BY st.store_name;
+
+
+-- What is the most popular category based on the number of orders across all of the stores?
+SELECT c.category_name, COUNT(DISTINCT o.order_id) AS num_orders
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+JOIN categories c ON p.category_id = c.category_id
+GROUP BY c.category_name
+HAVING COUNT(DISTINCT o.order_id) = (
+  SELECT MAX(order_count)
+  FROM (
+    SELECT COUNT(DISTINCT o.order_id) AS order_count
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    JOIN categories c ON p.category_id = c.category_id
+    GROUP BY c.category_name
+  ) AS category_order_counts
+);
+
+
+-- What is the total revenue generated from all categories across all of the stores, listed from highest to lowest? 
+SELECT c.category_name, 
+       SUM(oi.quantity * oi.list_price * (1 - oi.discount)) AS total_revenue
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+JOIN categories c ON p.category_id = c.category_id
+GROUP BY c.category_name
+ORDER BY total_revenue DESC;
+
+
+-- What is the first name, city name, state, and zip code of the top 5 customers of the brand Haro?
+SELECT c.first_name, c.city AS city_name, c.state, c.zip_code, SUM(oi.quantity * oi.list_price * (1 - oi.discount)) AS total_revenue 
+FROM customers c 
+JOIN orders o ON c.customer_id = o.customer_id 
+JOIN order_items oi ON o.order_id = oi.order_id 
+JOIN products p ON oi.product_id = p.product_id 
+JOIN brands b ON p.brand_id = b.brand_id 
+WHERE b.brand_name = 'Haro' 
+GROUP BY c.customer_id, c.first_name, c.city, c.state, c.zip_code 
+ORDER BY total_revenue DESC 
+LIMIT 5;
