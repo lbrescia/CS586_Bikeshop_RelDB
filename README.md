@@ -31,6 +31,8 @@ psql -U <YourUser> -d bikeshop_reldb -f update.sql
 ```sql
 psql -U <YourUser> -d bikeshop_reldb -f queries.sql
 ```
+**NOTE** Take a look at queries.sql for an updated 20 questions!
+
 
 This should be enough for you to start working with the database!  
 
